@@ -4,14 +4,14 @@ Created this kivy app to help with my wife's weekly shop.
 Requirements were simple enough:
   - store names of favourite dishes (crud - create, read, update, delete)
   - include main ingredients for each dish (more crud)
-  - be able to use speech to text, including english and cantones (what!)
+  - be able to use speech to text, including english and cantonese (what!)
   - option to select a dish for each day of the week
   - feature to auto-generate grocery list from the ingredients saved
   - option to customise grocery list
   - run it on her android
   - not look too shabby (I'm no ui expert but will do what I can)
   
-Decided to write the code in python (3.6) using Kivy. Just because I was getting the hang of python at the time.
+Decided to write the code in python (3.6) using Kivy plus kv file. Just because I was getting the hang of python at the time.
 Chose sqlite as "database" as it seemed the most straight forward.
 
 Found a traditional chinese otf (SourceHanSerifTC-Medium.otf) from the web that worked a charm. Had to download SwiftKey Keyboard on android device as well since the chinese input on default samsung keyboard did not work for some reason.
