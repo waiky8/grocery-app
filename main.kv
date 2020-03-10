@@ -1,0 +1,861 @@
+#:import Factory kivy.factory.Factory
+
+# Icons & graphics.
+#:set title_image "title.png"
+#:set line_image "line.png"
+#:set add_upd_image "rice_bowl.png"
+#:set update_image "rice_bowl.png"
+#:set delete_image "bin.png"
+#:set wipe_image "wipe.png"
+#:set menu_image "menu.png"
+#:set view_cart_image "shopping_list.png"
+#:set save_cart_image "save.png"
+#:set clear_image "eraser.png"
+#:set search_image "search.png"
+#:set backup_image "backup.png"
+#:set restore_image "restore.png"
+#:set back_image "back.png"
+#:set exit_image "exit.png"
+
+# Chinese font.
+#:set simple_chn_font "SourceHanSerifTC-Medium.otf"
+
+# Text sizes.
+#:set text_font_sml "12sp"
+#:set text_font_med "15sp"
+#:set text_font_big "18sp"
+#:set text_font_bigger "32sp"
+
+# Set colour.
+#:set screen_bg_colour (0.5, 0.5, 0.5, 0.05)
+#:set spinner_fg_colour (1, 1, 1, 1)
+#:set spinner_bg_colour (187 / 255, 134 / 255, 252 / 255, 1)
+#:set spinner_item_fg_colour (1, 1, 1, 1)
+#:set spinner_item_bg_colour (187 / 255, 134 / 255, 252 / 255, 0.6)
+#:set text_input_fg_colour (0, 0, 0, 1)
+#:set text_input_bg_colour (3 / 255, 218 / 255, 197 / 255, 1)
+#:set hint_colour (0, 0, 0, 0.5)
+#:set checkbox_fg_colour (187 / 255, 134 / 255, 252 / 255, 1)
+#:set border_colour (187 / 255, 134 / 255, 252 / 255, 1)
+
+# Dropdown heading.
+#:set spinner_text "Select Item(s)..."
+
+# Time in secs to keep spinner item pressed before performing a specified action (not currently used).
+#:set time_to_action 2
+
+# Related to weekly menu
+#:set day ""
+#:set dish ""
+
+
+<Button>:
+    background_color: screen_bg_colour
+
+
+<TextInput>:
+    foreground_color: text_input_fg_colour
+    background_color: text_input_bg_colour
+
+
+<MySpinnerOptions@SpinnerOption>:
+    background_color: spinner_item_bg_colour
+    color: spinner_item_fg_colour
+    font_name: simple_chn_font
+    font_size: text_font_med
+
+    on_press:
+        app.root.start_clock()
+        app.root.select_spinner(self.text)
+        app.root.load_cart()
+
+    on_release:
+        app.root.stop_clock()   # Placeholder to use self.elapsed_time and time_to_action to trigger event.
+
+
+<MyDropdown@DropDown>:
+    max_height: 900
+    bar_width: 4
+    effect_cls: "ScrollEffect"
+    scroll_type: ["bars", "content"]
+
+
+<MyWidgets@FloatLayout>:
+    id: my_widgets
+    orientation: "vertical"
+
+    canvas:
+        Color:
+            rgba: screen_bg_colour
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+    Image:
+        id: title_img
+        source: title_image
+        size_hint: (None, None)
+        size: (root.width * 0.9, root.height * 0.14)
+        pos_hint: {"center_x": 0.5, "y": 0.78}
+        keep_ratio: False
+        allow_stretch: True
+
+    Button:
+        id: update_butt
+        size_hint: (None, None)
+        size: (root.width/2.8, root.height/5)
+        pos_hint: {"x": 0.1, "y": 0.55}
+        on_press:
+            Factory.PopupDish().open()
+
+        Image:
+            id: update_butt_img
+            source: update_image
+            width: self.parent.width * 0.85
+            height: self.parent.height * 0.85
+            x: self.parent.x + 5
+            y: self.parent.y
+            keep_ratio: False
+            allow_stretch: True
+
+    Button:
+        id: menu_butt
+        size_hint: (None, None)
+        size: (root.width/2.8, root.height/5)
+        pos_hint: {"x": 0.55, "y": 0.55}
+        on_press:
+            app.root.get_saved_menu()
+            Factory.PopupMenu().open()
+
+        Image:
+            id: menu_img
+            source: menu_image
+            width: self.parent.width * 0.85
+            height: self.parent.height * 0.85
+            x: self.parent.x + 5
+            y: self.parent.y
+            keep_ratio: False
+            allow_stretch: True
+
+    Button:
+        id: view_cart_butt
+        size_hint: (None, None)
+        size: (root.width/2.8, root.height/5)
+        pos_hint: {"x": 0.1, "y": 0.3}
+        on_press:
+            app.root.build_saved_items()
+            Factory.PopupCart().open()
+
+        Image:
+            id: view_cart_butt_img
+            source: view_cart_image
+            width: self.parent.width * 0.85
+            height: self.parent.height * 0.85
+            x: self.parent.x + 5
+            y: self.parent.y
+            keep_ratio: False
+            allow_stretch: True
+
+    Button:
+        id: exit_app
+        size_hint: (None, None)
+        size: (root.width/2.8, root.height/5)
+        pos_hint: {"x": 0.55, "y": 0.3}
+        on_press:
+            app.root.exit_app()
+
+        Image:
+            id: exit_img
+            source: exit_image
+            width: self.parent.width * 0.85
+            height: self.parent.height * 0.85
+            x: self.parent.x + 5
+            y: self.parent.y
+            keep_ratio: False
+            allow_stretch: True
+
+
+<PopupDish@Popup>:
+    id: popup_dish
+    title: "Update / Delete Dish"
+    title_size: 50
+    size_hint: (1, 1)
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+    FloatLayout:
+        Button:
+            id: save_dish_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.05, "y": 0.85}
+            on_press:
+                app.root.add_update_dish(text_input1.text, text_input2.text)
+            on_release:
+                text_input1.text = ""
+                text_input2.text = ""
+                msg_text.text = app.root.msg
+                app.root.clear_text_input()
+
+            Image:
+                id: save_cart_butt_img
+                source: save_cart_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: delete_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.21, "y": 0.85}
+            on_press:
+                app.root.delete_dish()
+            on_release:
+                msg_text.text = app.root.msg
+
+            Image:
+                id: delete_img
+                source: delete_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: clear_butt
+            size_hint: (None, None)
+            size: (root.width/6, root.height/10)
+            pos_hint: {"x": 0.53, "y": 0.85}
+            on_press:
+                app.root.clear_text_input()
+                text_input1.text = ""
+                text_input2.text = ""
+                msg_text.text = ""
+
+            Image:
+                id: clear_butt_img
+                source: clear_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: search_butt
+            size_hint: (None, None)
+            size: (root.width/6, root.height/10)
+            pos_hint: {"x": 0.37, "y": 0.85}
+            on_press:
+                app.root.search_dish_details()
+                text_input1.text = app.root.text_input_1
+                text_input2.text = app.root.text_input_2
+                msg_text.text = app.root.msg
+
+            Image:
+                id: search_butt_img
+                source: search_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: back_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.8, "y": 0.85}
+            on_release:
+                root.dismiss()
+
+            Image:
+                id: back_butt_img
+                source: back_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Spinner:
+            id: my_spinner
+            size_hint: (None, None)
+            size: (root.width * 0.45, root.height * 0.05)
+            pos_hint: {"center_x": 0.25, "y": 0.75}
+
+            canvas.before:
+                Color:
+                    rgba: spinner_bg_colour
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            background_color: spinner_bg_colour
+            color: spinner_fg_colour
+
+            text: spinner_text
+            values: app.row
+            on_press:
+                app.root.refresh_spinner()
+                my_spinner.values = app.root.row
+
+            on_text:
+                my_spinner.text = spinner_text
+
+            font_name: simple_chn_font
+            font_size: text_font_med
+
+            dropdown_cls: Factory.MyDropdown
+            option_cls: Factory.MySpinnerOptions
+
+        TextInput:
+            size_hint: (None, None)
+            size: (root.width * 0.43, root.height * 0.05)
+            pos_hint: {"x": 0.52, "y": 0.75}
+            id: text_input1
+            text: app.root.text_input_1
+            hint_text: "Dish (max 20 chars)"
+            hint_text_color: hint_colour
+            font_name: simple_chn_font
+            font_size: text_font_med
+            background_color: spinner_bg_colour
+
+            on_text:
+                app.root.count_input_char(self.text)
+                self.text = app.root.input_string
+
+        ScrollView:
+            size_hint: (None, None)
+            size: (root.width * 0.43, root.height * 0.45)
+            pos_hint: {"x": 0.52, "y": 0.24}
+            TextInput:
+                id: text_input2
+                text: app.root.text_input_2
+                hint_text: "Ingredient(s)"
+                hint_text_color: hint_colour
+                size_hint_y: None
+                height: root.height * 0.5
+                multiline: True
+                font_name: simple_chn_font
+                font_size: text_font_med
+
+        Image:
+            id: line_img
+            source: line_image
+            size_hint: (None, None)
+            size: (root.width * 0.96, root.height * 0.002)
+            pos_hint: {"center_x": 0.5, "y": 0.06}
+            keep_ratio: False
+            allow_stretch: True
+
+        Label:
+            id: msg_text
+            text: app.msg
+            font_size: text_font_sml
+            size_hint: (None, None)
+            size: (root.width, 80)
+            pos_hint: {"x": 0.05, "y": 0.01}
+            text_size: self.size
+            halign: "left"
+            multiline: True
+
+
+<PopupMenu@Popup>:
+    id: popup_menu
+    title: "This Week's Menu"
+    title_size: 50
+    size_hint: (1, 1)
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+    FloatLayout:
+        Button:
+            id: save_menu
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.05, "y": 0.85}
+            on_press:
+                app.root.save_menu()
+            on_release:
+                if not app.root.skip: app.root.get_saved_menu()
+                if not app.root.skip: weekly_menu_sun.text = app.root.saved_menu_sun
+                if not app.root.skip: weekly_menu_mon.text = app.root.saved_menu_mon
+                if not app.root.skip: weekly_menu_tue.text = app.root.saved_menu_tue
+                if not app.root.skip: weekly_menu_wed.text = app.root.saved_menu_wed
+                if not app.root.skip: weekly_menu_thu.text = app.root.saved_menu_thu
+                if not app.root.skip: weekly_menu_fri.text = app.root.saved_menu_fri
+                if not app.root.skip: weekly_menu_sat.text = app.root.saved_menu_sat
+                if not app.root.skip: app.root.build_saved_items()
+                if not app.root.skip: app.root.save_items(app.root.saved_list)
+                msg_text.text = app.root.msg
+
+            Image:
+                id: save_cart_butt_img
+                source: save_cart_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: wipe_butt
+            size_hint: (None, None)
+            size: (root.width/6, root.height/10)
+            pos_hint: {"x": 0.21, "y": 0.85}
+            on_press:
+                app.root.clear_menu()
+                app.root.get_saved_menu()
+                weekly_menu_sun.text = app.root.saved_menu_sun
+                weekly_menu_mon.text = app.root.saved_menu_mon
+                weekly_menu_tue.text = app.root.saved_menu_tue
+                weekly_menu_wed.text = app.root.saved_menu_wed
+                weekly_menu_thu.text = app.root.saved_menu_thu
+                weekly_menu_fri.text = app.root.saved_menu_fri
+                weekly_menu_sat.text = app.root.saved_menu_sat
+                msg_text.text = app.root.msg
+
+            Image:
+                id: wipe_butt_img
+                source: wipe_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: view_cart_butt
+            size_hint: (None, None)
+            size: (root.width/6, root.height/10)
+            pos_hint: {"x": 0.37, "y": 0.85}
+            on_press:
+                app.root.build_saved_items()
+                Factory.PopupCart().open()
+
+            Image:
+                id: view_cart_butt_img
+                source: view_cart_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: clear_butt
+            size_hint: (None, None)
+            size: (root.width/6, root.height/10)
+            pos_hint: {"x": 0.53, "y": 0.85}
+            on_press:
+                app.root.clear_text_input()
+            on_release:
+                msg_text.text = app.root.msg
+
+            Image:
+                id: clear_butt_img
+                source: clear_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: back_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.8, "y": 0.85}
+            on_release:
+                root.dismiss()
+
+            Image:
+                id: back_butt_img
+                source: back_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Spinner:
+            id: my_spinner
+            size_hint: (None, None)
+            size: (root.width * 0.45, root.height * 0.05)
+            pos_hint: {"center_x": 0.24, "y": 0.75}
+
+            canvas.before:
+                Color:
+                    rgba: spinner_bg_colour
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+
+            background_color: spinner_bg_colour
+            color: spinner_fg_colour
+
+            text: spinner_text
+            values: app.row
+            on_press:
+                app.root.refresh_spinner()
+                my_spinner.values = app.root.row
+
+            on_text:
+                my_spinner.text = spinner_text
+
+            font_name: simple_chn_font
+            font_size: text_font_med
+
+            dropdown_cls: Factory.MyDropdown
+            option_cls: Factory.MySpinnerOptions
+
+        FloatLayout:
+            size_hint: (None, None)
+            size: (root.width * 0.5, root.height * 0.34)
+            pos_hint: {"x": 0.5, "y": 0.425}
+            orientation: "horizontal"
+
+            BoxLayout:
+                size_hint: (None, None)
+                size: (root.width * 0.1, root.height * 0.34)
+                pos_hint: {"x": 0.01, "y": 0}
+                orientation: "vertical"
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Sun"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Su"
+                        color: checkbox_fg_colour
+
+                BoxLayout
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Mon"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Mo"
+                        color: checkbox_fg_colour
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Tue"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Tu"
+                        color: checkbox_fg_colour
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Wed"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "We"
+                        color: checkbox_fg_colour
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Thu"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Th"
+                        color: checkbox_fg_colour
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Fri"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Fr"
+                        color: checkbox_fg_colour
+
+                BoxLayout:
+                    CheckBox:
+                        group: "Day"
+                        id: chk_day
+                        text: "Sat"
+                        on_active:
+                            app.root.select_day(self.text)
+                    Label:
+                        text: "Sa"
+                        color: checkbox_fg_colour
+
+            Label:
+                id: weekly_menu_sun
+                text: app.root.saved_menu_sun
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.89}
+
+            Label:
+                id: weekly_menu_mon
+                text: app.root.saved_menu_mon
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.745}
+
+            Label:
+                id: weekly_menu_tue
+                text: app.root.saved_menu_tue
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.605}
+
+            Label:
+                id: weekly_menu_wed
+                text: app.root.saved_menu_wed
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.465}
+
+            Label:
+                id: weekly_menu_thu
+                text: app.root.saved_menu_thu
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.318}
+
+            Label:
+                id: weekly_menu_fri
+                text: app.root.saved_menu_fri
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.175}
+
+            Label:
+                id: weekly_menu_sat
+                text: app.root.saved_menu_sat
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_med
+                size_hint: (None, None)
+                size: (root.width * 0.35, root.height * 0.03)
+                pos_hint: {"x": 0.24, "y": 0.03}
+
+        FloatLayout:
+            size_hint: (None, None)
+            size: (root.width * 0.465, root.height * 0.34)
+            pos_hint: {"x": 0.5, "y": 0.425}
+            canvas:
+                Color:
+                    rgba: border_colour
+                Line:
+                    width: 2
+                    rectangle: (self.x, self.y, self.width, self.height)
+
+        Image:
+            id: line_img
+            source: line_image
+            size_hint: (None, None)
+            size: (root.width * 0.96, root.height * 0.002)
+            pos_hint: {"center_x": 0.5, "y": 0.06}
+            keep_ratio: False
+            allow_stretch: True
+
+        Label:
+            id: msg_text
+            text: app.msg
+            font_size: text_font_sml
+            size_hint: (None, None)
+            size: (root.width, 80)
+            pos_hint: {"x": 0.05, "y": 0.01}
+            text_size: self.size
+            halign: "left"
+            multiline: True
+
+
+<PopupCart@Popup>:
+    id: popup_cart
+    title: "Shopping Cart"
+    title_size: 50
+    size_hint: (1, 1)
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+    FloatLayout:
+        Button:
+            id: save_cart_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.05, "y": 0.85}
+            on_press:
+                app.root.save_items(cart.text)
+                cart.text = app.root.saved_list
+            on_release:
+                msg_text2.text = app.root.msg
+
+            Image:
+                id: save_cart_butt_img
+                source: save_cart_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: empty_cart_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.21, "y": 0.85}
+            on_press:
+                app.root.empty_cart()
+            on_release:
+                cart.text = ""
+                msg_text2.text = app.root.msg
+
+            Image:
+                id: empty_cart_butt_img
+                source: delete_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: restore_data
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.37, "y": 0.85}
+            on_press:
+                app.root.restore_data()
+            on_release:
+                app.root.build_saved_items()
+                cart.text = app.root.saved_list
+                msg_text2.text = app.root.msg
+
+            Image:
+                id: restore_img
+                source: restore_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: backup_data
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.53, "y": 0.85}
+            on_press:
+                app.root.backup_data()
+            on_release:
+                msg_text2.text = app.root.msg
+
+            Image:
+                id: backup_img
+                source: backup_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        Button:
+            id: back_butt
+            size_hint: (None, None)
+            size: (root.width/6,  root.height/10)
+            pos_hint: {"x": 0.8, "y": 0.85}
+            on_release:
+                root.dismiss()
+
+            Image:
+                id: back_butt_img
+                source: back_image
+                width: self.parent.width * 0.85
+                height: self.parent.height * 0.85
+                x: self.parent.x + 5
+                y: self.parent.y
+                keep_ratio: False
+                allow_stretch: True
+
+        ScrollView:
+            size_hint: (None, None)
+            size: (root.width * 0.65, root.height * 0.64)
+            pos_hint: {"x": 0.16, "y": 0.08}
+            TextInput:
+                id: cart
+                size_hint_y: None
+                height: root.height * 2
+                text: app.root.saved_list
+                text_size: self.size
+                font_name: simple_chn_font
+                font_size: text_font_big
+
+        Image:
+            id: line_img
+            source: line_image
+            size_hint: (None, None)
+            size: (root.width * 0.96, root.height * 0.002)
+            pos_hint: {"center_x": 0.5, "y": 0.06}
+            keep_ratio: False
+            allow_stretch: True
+
+        Label:
+            id: msg_text2
+            text: app.msg
+            font_size: text_font_sml
+            size_hint: (None, None)
+            size: (root.width, 80)
+            pos_hint: {"x": 0.05, "y": 0.01}
+            text_size: self.size
+            halign: "left"
+            multiline: True
+
+
+<MyLayout@FloatLayout>:
+    MyWidgets:
