@@ -20,8 +20,7 @@ To convert the code to android, I used **buildozer**, running on **lubuntu** (**
 
 I used/doctored some images from the web (free ones) for the icons and graphics. 
 
-One thing I learned on this journey is that in order to get from a to b, you will likely need to go via c, d and e!
-But I realised how much I enjoyed coding and learning new technology, combating setbacks etc.
+One thing that I learned on this journey is that in order to get from a to b, you will likely need to go via c, d and e. However, it was immensely satisfying once I got it to work!
 
 Note, I initially included options to backup the sqlite file to my google drive and restore it.
 Code ran fine in windows but ran into permissioning errors when I tried it on android - apparently they limited the permissioning (after android 4 point something) and it is no longer easy to access application files. Closing some security loophole so I guess makes sense but does make it more difficult. Tried several ways to resolve (youtube) but still no joy. I can workaround the problem using adb on a rooted phone but was told by the wife not to root her phone! Works on my rooted device so at least I know it works.
