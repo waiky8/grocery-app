@@ -16,7 +16,7 @@ Chose **sqlite** as "database" as it seemed the most straight forward.
 
 Found a traditional **chinese otf** (SourceHanSerifTC-Medium.otf) from the web that worked a charm. Had to download **SwiftKey Keyboard** on android device as well since the chinese input on default samsung keyboard did not work for some reason.
 
-To convert the code to android, I used **buildozer**, running on **ubuntu (linux emulator)**. Word of caution, it takes around 30 mins to convert so make sure your code is in decent shape first.
+To convert the code to android, I used **buildozer**, running on **ubuntu** (linux emulator - must be **linux** if running on windows). Word of caution, it takes around 30 mins to convert so make sure your code is in decent shape first.
 
 I used/doctored some images from the web (free ones) for the icons and graphics. 
 
