@@ -23,3 +23,8 @@ One thing that I learned is that in order to get from a to b, you will likely ne
 
 Note, I initially included options to backup the sqlite file to my google drive and restore it.
 Code ran fine in windows but encountered permissioning errors when I tried it on android - apparently they limited the permissioning (after android 4 point something) and it is no longer easy to access application files. Closing some security loophole so makes sense I suppose. Tried several ways to resolve (youtube) but still no joy. I can workaround the problem using adb on a rooted phone but was told by the wife not to root her phone - ever! Works on my rooted device so at least I know it works.
+
+Sample.<br>
+![alt text](https://github.com/waiky8/grocery-app/blob/master/screenshots/screenshot2.png)
+![alt text](https://github.com/waiky8/grocery-app/blob/master/screenshots/screenshot3.png)
+![alt text](https://github.com/waiky8/grocery-app/blob/master/screenshots/screenshot4.png)
