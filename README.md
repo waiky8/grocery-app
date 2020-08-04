@@ -1,4 +1,4 @@
-# grocery app
+# Grocery App
 Created this **kivy** app to help with my wife's weekly shop.
 
 Requirements were simple enough:
